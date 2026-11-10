@@ -56,16 +56,22 @@ jobs:
         run: |
           $dockerDir = "C:\Users\91901\AppData\Local\Programs\DockerDesktop\resources\bin"
           $dockerDir | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          
+
       - name: Pull latest image
-        run: docker pull rasooldockerhub5/learning-devops-web:latest
+        shell: powershell
+        run: |
+          $docker = "C:\Users\91901\AppData\Local\Programs\DockerDesktop\resources\bin\docker.exe"
+          Test-Path $docker
+          & $docker --version
+          & $docker pull rasooldockerhub5/learning-devops-web:latest
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Deploy website
         shell: powershell
         run: |
-          docker rm -f cd-web 2>$null
-          if ($LASTEXITCODE -ne 0) { $global:LASTEXITCODE = 0 }
-          docker run -d --name cd-web --restart unless-stopped -p 8080:80 rasooldockerhub5/learning-devops-web:latest
+          $docker = "C:\Users\91901\AppData\Local\Programs\DockerDesktop\resources\bin\docker.exe"
+          & $docker rm -f cd-web 2>$null
+          & $docker run -d --name cd-web --restart unless-stopped -p 8080:80 rasooldockerhub5/learning-devops-web:latest
           if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Verify website
