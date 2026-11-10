@@ -50,7 +50,13 @@ jobs:
         with:
           username: ${{ secrets.RASOOL_DOCKERHUB }}
           password: ${{ secrets.RASOOL_DOCKERHUB_TOKEN }}
-
+          
+      - name: Add Docker to PATH
+        shell: powershell
+        run: |
+          $dockerDir = "C:\Users\91901\AppData\Local\Programs\DockerDesktop\resources\bin"
+          $dockerDir | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          
       - name: Pull latest image
         run: docker pull rasooldockerhub5/learning-devops-web:latest
 
